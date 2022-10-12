@@ -47,4 +47,7 @@ print(suma.sum())
 
 print()
 # zadanie10
-#nie mam pomysłu jak to rozwiązać
+def random_tensor():
+    tmp = np.random.randint(1,10,(1,5))
+    return np.random.randint(1,50,(tmp[0][0], tmp[0][1]))
+print(random_tensor())
