@@ -19,7 +19,7 @@ class BaseImage:
         """
         inicjalizator wczytujacy obraz do atrybutu data na podstawie sciezki
         """
-        data = imread(path)
+        self.data = imread(path)
 
         pass
 
