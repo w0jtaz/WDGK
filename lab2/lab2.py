@@ -1,6 +1,8 @@
 import  numpy as np
 from enum import Enum
 from matplotlib.image import imread
+from matplotlib.pyplot import imshow
+from matplotlib.image import imsave
 
 
 
@@ -27,18 +29,21 @@ class BaseImage:
         """
         metoda zapisujaca obraz znajdujacy sie w atrybucie data do pliku
         """
+        imsave('image.jpg', self.data)
         pass
 
     def show_img(self) -> None:
         """
         metoda wyswietlajaca obraz znajdujacy sie w atrybucie data
         """
+        imshow(self.data)
         pass
 
     def get_layer(self, layer_id: int) -> 'Image':
         """
         metoda zwracajaca warstwe o wskazanym indeksie
         """
+        return self.data[layer_id]
         pass
 
     def to_hsv(self) -> 'Image':
