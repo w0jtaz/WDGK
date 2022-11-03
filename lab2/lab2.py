@@ -20,14 +20,11 @@ class BaseImage:
     data: np.ndarray  # tensor przechowujacy piksele obrazu
     color_model: ColorModel  # atrybut przechowujacy biezacy model barw obrazu
 
-    def __init__(self, data: Any, color_model: ColorModel) -> None:
-        if data is None:
-            self.data = None
-        elif isinstance(data, str):
-            self.data = imread(data)
-        else:
-            self.data = data
-        self.color_model = color_model
+    def __init__(self, path: str) -> None:
+        self.data = imread(path)
+        self.color_model = 0
+
+
 
     def save_img(self, path: str) -> None:
         """
@@ -40,7 +37,7 @@ class BaseImage:
         metoda wyswietlajaca obraz znajdujacy sie w atrybucie data
         """
         imshow(self.data)
-        plt.show()
+        # plt.show()
 
     def get_layer(self, layer_id: int) -> 'Image':
         """
@@ -68,7 +65,10 @@ class BaseImage:
                      np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1),
                      360 - np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1))
 
-        return BaseImage(np.dstack((H, S, V)), ColorModel.hsv)
+        HSV = np.stack((H/360, S, V), axis =2)
+        self.color_model = 1
+        self.data = HSV
+        return HSV
 
     def to_hsi(self) -> 'Image':
         """
@@ -86,7 +86,10 @@ class BaseImage:
                      np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1),
                     360 - np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1))
 
-        return BaseImage(np.dstack((H, S, I)), ColorModel.hsi)
+        HSI = np.stack((H / 360, S, I), axis=2)
+        self.color_model = 2
+        self.data = HSI
+        return HSI
 
     def to_hsl(self) -> 'Image':
         """
@@ -105,7 +108,10 @@ class BaseImage:
                      np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1),
                      360 - np.cos((red - green / 2 - blue / 2) / np.sqrt(additionMinusSubtraction)) ** (-1))
 
-        return BaseImage(np.dstack((H, S, L)), ColorModel.hsl)
+        HSL = np.stack((H / 360, S, L), axis=2)
+        self.color_model = 3
+        self.data = HSL
+        return HSL
 
     def hsv_to_rgb(self) -> 'BaseImage':
         if self.color_model != ColorModel.hsv:
@@ -118,7 +124,7 @@ class BaseImage:
         g = np.where(H >= 300, z + m, np.where(H >= 240, m, np.where(H >= 120, M, np.where(H >= 60, M, z + m))))
         b = np.where(H >= 300, m, np.where(H >= 240, M, np.where(H >= 120, z + m, m)))
 
-        return BaseImage(np.dstack((r, g, b)), ColorModel.rgb)
+        return BaseImage(np.dstack((r, g, b)))
 
     def hsi_to_rgb(self) -> 'BaseImage':
         if self.color_model != ColorModel.hsi:
@@ -132,7 +138,7 @@ class BaseImage:
         b = np.where(H > 240, I + IS * np.cos(H - 240) / np.cos(300 - H), np.where(H == 240, I + 2 * IS,
             np.where(H > 120, I + IS * (1 - np.cos(H - 120) / np.cos(180 - H)),I - IS)))
 
-        return BaseImage(np.dstack((r, g, b)), ColorModel.rgb)
+        return BaseImage(np.dstack((r, g, b)))
 
     def hsl_to_rgb(self) -> 'BaseImage':
         if self.color_model != ColorModel.hsl:
@@ -147,7 +153,7 @@ class BaseImage:
         b = np.where(H >= 300, 255 * x + m, np.where(H >= 240, 255 * d + m, np.where(H >= 180, 255 * d + m,
             np.where(H >= 120, 255 * x + m, m))))
 
-        return BaseImage(np.dstack((r, g, b)), ColorModel.rgb)
+        return BaseImage(np.dstack((r, g, b)))
 
     def to_rgb(self) -> 'Image':
         """
