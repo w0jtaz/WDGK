@@ -5,7 +5,6 @@ from enum import Enum
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
 
-
 class Histogram:
 
     #klasa reprezentujaca histogram danego obrazu
@@ -83,46 +82,82 @@ class ImageComparison(BaseImage):
         #metoda zwracajaca obiekt zawierajacy histogram biezacego obrazu (1- lub wielowarstwowy)
         pass
 
+    def compare_to(self, other: Image, method: ImageDiffMethod) -> float:
+        X1 = self.data
+        X1A = X1[:, :, 0]
+        X1B = X1[:, :, 1]
+        X1C = X1[:, :, 2]
+        I1 = (X1A + X1B + X1C) / 3
+        GRAY1 = np.stack((I1, I1, I1), axis=2).astype('uint8').ravel()
+        X2 = other.data
+        X2A = X2[:, :, 0]
+        X2B = X2[:, :, 1]
+        X2C = X2[:, :, 2]
+        I2 = (X2A + X2B + X2C) / 3
+        GRAY2 = np.stack((I2, I2, I2), axis=2).astype('uint8').ravel()
 
-def compare_to(self, other: Image, method: ImageDiffMethod) -> float:
-    X1 = self.data
-    X1A = X1[:, :, 0]
-    X1B = X1[:, :, 1]
-    X1C = X1[:, :, 2]
-    I1 = ((X1A + X1B + X1C) / 3).ravel()
-    X2 = other.data
-    X2A = X2[:, :, 0]
-    X2B = X2[:, :, 1]
-    X2C = X2[:, :, 2]
-    I2 = ((X2A + X2B + X2C) / 3).ravel()
-    X1: np.ndarray = np.zeros(256)
-    X2: np.ndarray = np.zeros(256)
-    for i in range(0, I1.shape[0]):
-        X1[I1[i].astype('int64')] += 1
-    for i in range(0, I2.shape[0]):
-        X2[I2[i].astype('int64')] += 1
-    # MSE
-    if (method == 0):
-        MSE: float = 0
-        for i in range(0, X1.shape[0]):
-            MSE += (X1[i] - X2[i]) * (X1[i] - X2[i])
-        MSE = MSE / 256
-        return MSE
-    # RMSE
-    elif (method == 1):
-        RMSE: float = 0
-        for i in range(0, X1.shape[0]):
-            RMSE += (X1[i] - X2[i]) * (X1[i] - X2[i])
-        RMSE = np.sqrt(RMSE / 256)
-        return RMSE
-    # metoda zwracajaca mse lub rmse dla dwoch obrazow
+        #MSE
+        if(method == 0):
+            MSE:float = 0
+            for i in range(0, GRAY1.shape[0]):
+                MSE += (GRAY1[i] - GRAY2[i]) * (GRAY1[i] - GRAY2[i])
+            MSE = MSE / 256
+            return MSE
+        #RMSE
+        elif(method == 1):
+            RMSE = 0
+            for i in range(0, GRAY1.shape[0]):
+                RMSE += (GRAY1[i] - GRAY2[i]) * (GRAY1[i] - GRAY2[i])
+            RMSE = np.sqrt(RMSE / 256)
+            return RMSE
+
+        #metoda zwracajaca mse lub rmse dla dwoch obrazow
+        pass
+
+
+    def compare_to(self, other: Image, method: ImageDiffMethod) -> float:
+        X1 = self.data
+        X1A = X1[:, :, 0]
+        X1B = X1[:, :, 1]
+        X1C = X1[:, :, 2]
+        I1 = ((X1A + X1B + X1C) / 3).ravel()
+        X2 = other.data
+        X2A = X2[:, :, 0]
+        X2B = X2[:, :, 1]
+        X2C = X2[:, :, 2]
+        I2 = ((X2A + X2B + X2C) / 3).ravel()
+        X1: np.ndarray = np.zeros(256)
+        X2: np.ndarray = np.zeros(256)
+        for i in range(0, I1.shape[0]):
+            X1[I1[i].astype('int64')] += 1
+        for i in range(0, I2.shape[0]):
+            X2[I2[i].astype('int64')] += 1
+        # MSE
+        if (method == 0):
+            MSE: float = 0
+            for i in range(0, X1.shape[0]):
+                MSE += (X1[i] - X2[i]) * (X1[i] - X2[i])
+            MSE = MSE / 256
+            return MSE
+        # RMSE
+        elif (method == 1):
+            RMSE: float = 0
+            for i in range(0, X1.shape[0]):
+                RMSE += (X1[i] - X2[i]) * (X1[i] - X2[i])
+            RMSE = np.sqrt(RMSE / 256)
+            return RMSE
+        # metoda zwracajaca mse lub rmse dla dwoch obrazow
+        pass
+class Image(GrayScaleTransform, ImageComparison):
+    def __int__(self, path: str):
+        super().__init__(path)
     pass
 
 x = BaseImage('lena.jpg')
 y = GrayScaleTransform('lena.jpg')
-print(x.color_model)
+# print(x.color_model)
 y.to_sepia(w=40)
-y.to_gray2()
+y.to_gray()
 y.show_img()
 x.to_hsv()
 x.to_rgb()
@@ -139,11 +174,9 @@ y.to_gray()
 print(y)
 y.show_img()
 
-z = ImageComparison('lena.jpg')
+z = Image('lena.jpg')
 y = z.histogram()
 print(y.shape)
 print(y)
-y.to_gray()
-y.show_img()
 z2 = Image('lenaplus1.jpg')
 print(z.compare_to(z2, 0))

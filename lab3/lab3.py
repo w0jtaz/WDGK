@@ -18,15 +18,7 @@ class GrayScaleTransform(BaseImage):
         return GRAY
         #metoda zwracajaca obraz w skali szarosci jako obiekt klasy BaseImage
         pass
-    def to_gray2(self) -> BaseImage:
-        R = self.data[:, :, 0].astype('float32')
-        G = self.data[:, :, 1].astype('float32')
-        B = self.data[:, :, 2].astype('float32')
-        I = (R + G + B) / 3
-        GRAY = np.stack((I*0.299, I*0.587, I*0.114), axis=2).astype('uint8')
-        self.color_model = 4
-        self.data = GRAY
-        return GRAY
+
     def to_sepia(self, alpha_beta: tuple = (None, None), w: int = None) -> BaseImage:
         R = self.data[:, :, 0].astype('float32')
         G = self.data[:, :, 1].astype('float32')
