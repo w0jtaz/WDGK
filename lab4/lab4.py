@@ -1,4 +1,4 @@
-from lab2.lab2 import BaseImage
+from lab2.lab2 import BaseImage, ColorModel
 from lab3.lab3 import Image, GrayScaleTransform
 import numpy as np
 from enum import Enum
@@ -19,7 +19,7 @@ class Histogram:
         R = self.values[:, :, 0].ravel()
         G = self.values[:, :, 1].ravel()
         B = self.values[:, :, 2].ravel()
-        f = plt.figure(figsize=(10, 3))
+        f = plt.figure(figsize=(11, 3))
         ax1 = f.add_subplot(131)
         ax2 = f.add_subplot(132)
         ax3 = f.add_subplot(133)
@@ -27,9 +27,9 @@ class Histogram:
         ax2.set_ylim([-200, 2600])
         ax3.set_ylim([-200, 4500])
         f.tight_layout(pad=0.5)
-        ax1.hist(B, bins=256, range=[0, 256], color='red', histtype='step')
+        ax1.hist(R, bins=256, range=[0, 256], color='red', histtype='step')
         ax2.hist(G, bins=256, range=[0, 256], color='green', histtype='step')
-        ax3.hist(R, bins=256, range=[0, 256], color='blue', histtype='step')
+        ax3.hist(B, bins=256, range=[0, 256], color='blue', histtype='step')
         plt.show()
         #metoda wyswietlajaca histogram na podstawie atrybutu values
         pass
@@ -52,7 +52,6 @@ class ImageComparison(BaseImage):
             W2: np.ndarray = np.zeros(256)
             W3: np.ndarray = np.zeros(256)
             tmp = 0
-            tmp2 = 0
             for i in range(0, R.shape[0]):
                 W1[R[i].astype('uint8')] += 1
                 tmp += 1
@@ -153,30 +152,9 @@ class Image(GrayScaleTransform, ImageComparison):
         super().__init__(path)
     pass
 
-x = BaseImage('lena.jpg')
-y = GrayScaleTransform('lena.jpg')
-# print(x.color_model)
-y.to_sepia(w=40)
-y.to_gray()
-y.show_img()
-x.to_hsv()
-x.to_rgb()
-x.show_img()
-x.to_hsi()
-x.show_img()
-img = imread('lena.jpg')
-print(img)
-z = Histogram(imread('lena.jpg'))
-z.plot()
+y = Histogram(imread('lena.jpg'))
+y.plot()
 
-y = GrayScaleTransform('lena.jpg')
-y.to_gray()
-print(y)
-y.show_img()
-
-z = Image('lena.jpg')
-y = z.histogram()
-print(y.shape)
-print(y)
-z2 = Image('lenaplus1.jpg')
-print(z.compare_to(z2, 0))
+x = Image('lena.jpg')
+x2 = Image('lenaplus1.jpg')
+print(x.compare_to(x2, 0))
