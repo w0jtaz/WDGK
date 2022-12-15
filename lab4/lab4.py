@@ -41,6 +41,7 @@ class ImageComparison(BaseImage):
     def __init__(self, path:str):
         super().__init__(path)
     #Klasa reprezentujaca obraz, jego histogram oraz metody porównania
+
     def histogram(self) -> Histogram:
         X = self.data
         if(self.color_model != 4):
@@ -157,4 +158,6 @@ y.plot()
 
 x = Image('lena.jpg')
 x2 = Image('lenaplus1.jpg')
+x3 = Image('kobieta.jpg')
 print(x.compare_to(x2, 0))
+print(x.compare_to(x3, 0))
