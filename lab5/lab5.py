@@ -92,21 +92,21 @@ class Image(GrayScaleTransform, ImageAligning):
     pass
 
 
-#
-# x = Image("lena.jpg")
-# x.to_gray()
-# histogram = Histogram(x.data)
-# histogram.to_cumulated().plot()
-#
-#
-# y = Image("lena.jpg")
-# y= Histogram(y.data)
-# y.to_cumulated().plot()
-#
-# z= Image("lena.jpg")
-# z.to_gray()
-# z = Histogram(z.data)
-# z.plot()
+
+x = Image("lena.jpg")
+x.to_gray()
+histogram = Histogram(x.data)
+histogram.to_cumulated().plot()
+
+
+y = Image("lena.jpg")
+y= Histogram(y.data)
+y.to_cumulated().plot()
+
+z= Image("lena.jpg")
+z.to_gray()
+z = Histogram(z.data)
+z.plot()
 
 q = Image("lena.jpg")
 q.align_image(True)
